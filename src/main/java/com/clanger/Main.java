@@ -35,7 +35,8 @@ public class Main{
 				String dados = JOptionPane.showInputDialog(null, "Digite o CPF do cliente que deseja consultar: ", "Consulta", JOptionPane.INFORMATION_MESSAGE);
 				consultar(dados);
 			} else if(isExcluir(opcao)) {
-
+				String dados = JOptionPane.showInputDialog(null, "Digite o CPF que deseja excluir: ", "Excluir", JOptionPane.INFORMATION_MESSAGE);
+				delete(dados);
 			}else if (isAlterar(opcao)) {
 				String dados = JOptionPane.showInputDialog(null, "Digite o CPF do cliente que deseja Alterar: ", "Alterar", JOptionPane.INFORMATION_MESSAGE);
 				alterar(dados);
@@ -44,13 +45,26 @@ public class Main{
 		}
 	}
 	
+	private static void delete(String dados) {
+		Boolean valid = isValidCpf(dados);
+		iClienteDAO.excluir(Long.valueOf(dados));
+		if(valid) {
+			JOptionPane.showMessageDialog(null, "Deletado","Excluir", JOptionPane.INFORMATION_MESSAGE);
+		} else {
+			JOptionPane.showMessageDialog(null, "Digite um CPF valido", "Excluir", JOptionPane.INFORMATION_MESSAGE);
+		}
+			
+	}
+
 	private static void alterar(String dados) {
 		Boolean valid = isValidCpf(dados);
 		Cliente cliente = iClienteDAO.consultar(Long.parseLong(dados));	
 		if(valid && cliente != null) {
-			String novosDados = JOptionPane.showInputDialog(null,"Digite os dados do cliente separado por virgula: Nome, CPF, Telefone, Endereco, Numero, Cidade, Estado",
+			String newData = JOptionPane.showInputDialog(null,"Digite os dados do cliente separado por virgula: Nome, CPF, Telefone, Endereco, Numero, Cidade, Estado",
 					"Alterar", JOptionPane.INFORMATION_MESSAGE);
-//			Cliente cliente = new Cliente(splitData[0], splitData[1], splitData[2], splitData[3], splitData[4], splitData[5], splitData[6]);
+			String[] splitData = newData.split(",");
+			Cliente newClient = new Cliente(splitData[0], splitData[1], splitData[2], splitData[3], splitData[4], splitData[5], splitData[6]);
+			iClienteDAO.alterar(newClient);
 		} else {
 			JOptionPane.showMessageDialog(null, "Digite somente um CPF valido!", "Consultar", JOptionPane.INFORMATION_MESSAGE);
 		}
